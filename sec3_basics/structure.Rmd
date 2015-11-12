@@ -1,0 +1,56 @@
+# Objektumok megtekintése
+
+Fontos tudatosítani, hogy a `print` eredménye többnyire nem felel meg az adott
+objektum pontos tartalmának:
+
+```{r}
+options(digits = 2) # hany tizedesjegyet jelenitsen meg
+vec <- rnorm(4)
+print(vec)
+
+# demonstracio 1
+options(digits = 10)
+vec
+
+# demonstracio 2
+class(vec) <- "specialVector"
+print.specialVector <- function(x, ...) print.default("hello")
+print(vec)
+
+# allitsuk vissza az alapbeallitasra
+options(digits = 7)
+```
+
+
+
+Egy objektum struktúrájáról többet megtudhatsz az RStudio "Environment" ablakában
+a megfelelő objektumra pillantva, amely valójában a `str` függvény eredményét 
+jeleníti meg.
+
+- `str` -> roppant hasznos
+```{r}
+# az elobbi peldat folytatva:
+str(vec)
+
+# uj pelda:
+mydat <- matrix(rnorm(10), 2, 5, 
+                dimnames=list(c("lower", "upper"),
+                              paste("col", 1:5, sep=".")))
+mydat
+str(mydat)
+```
+
+- `head` és `tail` -> főként data.frame esetén jön jól
+```{r}
+datfr <- data.frame(characters = letters[1:20], numbers = 1:20)
+```
+- első 10 elem kiírása
+```{r}
+head(datfr, 10)
+```
+
+- utolsó 10 elem kiírása
+```{r}
+tail(datfr, 10)
+```
+

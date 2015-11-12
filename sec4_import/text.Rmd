@@ -1,0 +1,78 @@
+# Szövegfájlok beolvasása és kiírása
+
+```{r, include=FALSE}
+# ezen csomagokra szuksegunk lesz
+packs <- c("hflights", "data.table")
+for (x in packs) { 
+    if (!require(x, character.only = TRUE)) install.packages(x)
+}
+```
+
+### Beolvasás
+Szövegfájlok (pl. .txt, .csv) importálását lehetőleg kezdd azzal, hogy 
+egy szerkesztővel (ne Excel-lel!) megnézed a fájl tartalmát. Ebből megtudhatod,
+hogy milyen karakter választja el az értékeket (pl. tab vagy pontosvessző),
+milyen karakter jelzi a tizedesvesszőt (pont vagy vessző) stb.
+
+Alapesetben a `read.table` függvényt érdemes használni.(Ha kíváncsi vagy a 
+részletekre és a mélyebb szintű függvényekre, nézd meg a [hivatalos leírást](http://cran.rapporter.net/doc/manuals/r-release/R-data.html)).
+```{r}
+# egy peldafajl, amely kulonbozo uzemek dolgozoinak alkalmassagvizsgalati
+# eredmenyeit tartalmazza (a "data" konyvtarban talalhato, ezert kell a
+# file.path() fuggvenyt hasznalni)
+dat_txt <- read.table(file.path("data", "AlkVizsg.txt"), 
+                      sep = "\t", dec = ",", header = TRUE)
+str(dat_txt)
+
+# egyszerubben
+dat_txt_short <- read.delim2(file.path("data", "AlkVizsg.txt"))
+
+# a ket objektum megegyezik (nem csoda, lasd a read.delim2 forraskodjat)
+identical(dat_txt, dat_txt_short)
+
+# ugyanez a .csv formatumu fajl eseteben
+dat_csv <- read.table(file.path("data", "AlkVizsg.csv"), 
+                      sep = ";", dec = ",", header = TRUE)
+str(dat_csv)
+
+# a ket objektum megegyezik
+identical(dat_txt, dat_csv)
+
+# egy meg kenyelmesebb megoldas
+dat_csv_short <- read.csv2(file.path("data", "AlkVizsg.csv"))
+
+# az eredmeny ujra ugyanaz
+identical(dat_csv, dat_csv_short)
+```
+
+Ha nagyobb fájlról van szó, érdemes áttanulmányozni a `read.table`
+dokumentációját. Az argumentumok megfelelő megválasztásával jelentősen
+felgyorsíthatjuk a beolvasási folyamatot.
+```{r}
+# ennel a meretnel mindegy, de az argumentumok illusztraciojara oke
+temp <- read.table(file.path("data", "AlkVizsg.txt"),
+                   sep = "\t", dec = ",", header = TRUE,
+                   colClasses = c("character", "character",
+                                  rep("integer", 4),
+                                  rep("numeric", 2)),
+                   comment.char = "",
+                   fileEncoding = "UTF-8",
+                   nrows = 623)
+```
+
+Ha igazán nagy szövegfájlt próbálsz beolvasni, használd az `fread` függvényt
+a *data.table* csomagból.
+
+### Kiírás
+
+A szövegfájlba történő kiírás jellemzően a `write.table` függvénnyel történik.
+```{r}
+# kiiras
+write.table(dat_csv, file = "temp.csv", 
+            sep = ";", quote = FALSE, 
+            row.names = FALSE)
+
+# csak pelda volt, toroljuk is fajlt
+unlink("temp.csv")
+```
+

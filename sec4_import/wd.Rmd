@@ -1,0 +1,40 @@
+# Munkakönyvtár, fájlműveletek
+
+Mielőtt rátérünk az adatbeolvasásra és -kiírásra, néhány praktikus infó:
+
+1) Ne felejtkezz el a munkakönyvtár beállításáról:
+```{r}
+# aktualis munkakonyvtar (=working directory)
+( wd <- getwd() )
+
+# munkakonyvtar modositasa
+setwd("..")
+
+# visszalepes az eredeti munkakonyvtarba
+setwd(wd)
+```
+
+2) Az R képes egyszerű fájlműveletekre, mint például:
+
+- egy könyvtár tartalmának megjelenítése
+```{r}
+# a (rejtett fajlok nelkuli) teljes lista
+dir()
+
+# bizonyos mintazatu fajlnevek
+dir(pattern = "Rmd")
+
+# a dir() es a list.files() ugyanaz
+?dir
+```
+
+- fájlok másolása, törlése stb.
+```{r}
+?file.copy
+```
+
+- fájlok alapinformációinak elérése (pl. méret)
+```{r}
+?file.info
+```
+

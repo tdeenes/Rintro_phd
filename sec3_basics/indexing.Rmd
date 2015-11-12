@@ -1,0 +1,121 @@
+# Objektumok elemeinek elérése (indexálása)
+
+- `[` -> megőrzi az objektum alaposztályát, több elem is elérhető
+- `[[` -> főként `list` és `data.frame` objektumokra, csak egy elem elérésére
+- `$` -> csak `list` és `data.frame` objektumokra, csak névvel
+- `@` -> S4 objektumokra (kezdőként nem kell)
+- az R-ben az elemeket elérhetjük a pozíciójuk és a nevük alapján is (már 
+persze ha van nekik), illetve használhatunk logikai vektort is az elemek 
+megtartására vagy kizárására
+
+
+### Elemek elérése vektorból
+
+```{r}
+# hozzunk letre egy vektort, amelynek az elemeknek van neve
+( vec <- c(1:2, 4) )
+names(vec) <- c("a", "b", "d")
+vec
+
+# numerikus index-szel
+vec[2:3]
+
+# negativ szam azt jelenti, hogy 'minden, kiveve az adott sorszamu elem'
+vec[-1]
+
+# eleres nevvel
+vec["b"]
+
+# logikai vektorral is indexelhetunk: 
+# a TRUE elemek maradnak, a FALSE elemek kiesnek
+# -> logikai index hossza azonos kell legyen a vektor hosszaval
+vec[c(FALSE, TRUE, FALSE, FALSE)]
+```
+
+### Elemek elérése többdimenziós vektorból
+```{r}
+( mat <- matrix((1:8)^2, 2, 4) )
+# elso sor elerese
+mat[1, ]
+# masodik oszlop elerese
+mat[, 2]
+
+# vegyithetjuk is az index-tipusokat:
+# pl. elso sor igen, masodik sor nem, illetve minden oszlop a 3. kivetelevel:
+mat[c(TRUE, FALSE), -3]
+```
+
+- ha meg akarod őrizni a dimenziókat (programozáskor nagyon hasznos)
+```{r}
+mat[, 2, drop = FALSE]
+```
+- első 5 elem elérése (ügyelj arra, hogy az R oszlop-orientált)
+```{r}
+mat[1:5]
+```
+
+### Lista és data.frame elemeinek elérése
+```{r}
+( mylist <- list(x=1, y=1:2, z=1:4) )
+```
+
+- névvel
+```{r}
+mylist$y
+mylist[["y"]]
+```
+
+- több elem együttes elérése névvel
+```{r}
+mylist[c("x", "z")]
+```
+- és numerikus indexekkel
+```{r}
+mylist[c(1, 3)]
+```
+
+- lista transzformációja data.frame-mé
+```{r}
+( datfr <- as.data.frame(mylist) )
+```
+
+- emlékezz, hogy a data.frame a lista és a mátrix kombinációjának tekinthető
+- a 'z' változó elérése
+```{r}
+datfr[["z"]] 
+datfr$z
+datfr[, "z"]
+```
+
+
+### Bizonyos sorok kiválasztása `data.frame`-ből
+
+- lássuk a korábban létrehozott data.frame-et:
+```{r}
+datfr
+```
+
+- érjük el a második sorát (emlékezz, a data.frame mátrixként is indexelhető):
+```{r}
+datfr[2, ]
+```
+
+- érjük el azt a sort, amelynél a 'z' változó értéke nagyobb 2-nél:
+```{r}
+# hozzunk létre egy vektort, amelyiknek az elemei TRUE vagy FALSE
+# attól függően, hogy a 'datfr' objektum 'z' változója nagyobb-e 2-nél
+index <- datfr$z > 2
+
+# használjuk ezt az index vektort a megfelelő sorok kinyerésére
+datfr[index, ]
+
+# az 'index' vektort nem muszáj expliciten létrehozni
+datfr[datfr$z > 2, ]
+```
+
+- egy kényelmesen használható függvény data.frame indexelésére a `subset()`
+```{r}
+subset(datfr, z > 2)
+```
+
+

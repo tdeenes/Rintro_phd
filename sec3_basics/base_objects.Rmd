@@ -1,0 +1,107 @@
+# Az R alapobjektumai
+
+- alapobjektum: vektor
+    - alaposztályok: numeric, logical, integer, complex, character, list, expression, raw (az utolsó nagyon ritkán kell)
+    - a vektor csak azonos alaposztályú elemeket tartalmazhat, kivéve a list
+- alap nyelvi objektum: függvény (function)
+    - standard használat: function_name(argument1, argument2)
+- az objektumoknak lehetnek attribútumai (`?attributes`):
+    - név (`names`, `dimnames`)  
+    - dimenzió (`dim`)   
+    - osztály (`class`)    
+    - egyedi (user-defined) attribútum
+
+### Vektor létrehozása
+```{r}
+vec <- c(1, 3, 6, 10)
+vec
+# ha integer-t szeretnél, írj a szám után egy L betűt
+int <- 1L
+str(int) # a str() nagyon hasznos, lasd később
+num <- 1
+str(num)
+```
+
+- sorozat
+```{r}
+upvec <- 10:16 # ez integer, hiába nincsen utána L
+upvec
+downvec <- 16:10
+downvec
+```
+
+- vektor nevekkel
+```{r}
+vec <- c(first = 1, second = 3, third = 6, fourth = 10)
+vec
+```
+
+### Függvény létrehozása
+
+- hozzunk létre egy függvényt, amelyik elemenként összead két numerikus vektort
+```{r}
+simpleAdd <- function(x, y) x + y
+```
+
+- bonyolultabbakhoz használj kapcsos zárójelet
+```{r}
+# ha az 'y' argumentum hiányzik, adja össze 
+# az 'x' vektor elemeit
+advAdd <- function(x, y) {
+    if (missing(y)) {
+        out <- sum(x)
+    } else {
+        out <- x + y
+    }
+    return(out)
+}
+```
+
+- a korábbi példában a `return` csak az érthetőség miatt szerepelt; az R az utoljára kiértékelt kifejezés eredményét automatikusan visszaadja
+```{r}
+advAdd2 <- function(x, y) {
+    if (missing(y)) {
+        sum(x)
+    } else {
+        x + y
+    }
+}
+```
+
+#### Hogyan hívhatók meg a függvények?
+- már eddig is ezt csináltuk (az R-ben bármit csinálunk, azt valójában függvény(ek) meghívásával tesszük), de most nézzük a sajátunkra:
+```{r}
+# ha nem adunk meg argumentumnevet, akkor a függvény 
+# argumentumainak eredeti sorrendje számít
+simpleAdd(2, 4)
+
+# ha megadjuk az argumentum nevét, a sorrend lényegtelen
+simpleAdd(y = 4, x = 2)
+
+# az argumentumként megadott objektumot nem muszáj a 
+# függvényhívás előtt létrehozni
+advAdd(1:3)
+```
+
+#### Hogyan lehet tárolni a függvény visszatérési értékét?
+- rendeld hozzá egy objektumhoz
+```{r}
+mysum <- advAdd(1:5)
+mysum
+```
+- többnyire a függvény-ek outputja sokkal komplexebb
+```{r}
+# példa: lineáris regresszió egy beépített adatbázison (?mtcars)
+?mtcars
+fit <- lm(mpg ~ wt, data=mtcars)
+fit_summary <- summary(fit)
+str(fit_summary)
+```
+
+### Hogyan lehet megnézni egy függvény forráskódját?
+- az R nyílt forráskódú: csak gépeld be a függvény nevét, zárójel nélkül
+```{r}
+var
+```
+
+- vagy nézd meg a teljes forráskódot mondjuk itt: https://github.com/wch/r-source
